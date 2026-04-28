@@ -4,7 +4,7 @@ This is my personal website, its like a hub (but not that kind of hub)
 [MORE SOON](https://gist.github.com/MattIPv4/045239bc27b16b2bcf7a3a9a4648c08a)
 [ANOTHER MORE SOON](https://instantostrich.com)
 
-Yes, I know, this website is very minimal, but it does what i want it to do and if you want to know what that is, 
+Yes, I know, this website is very minimal, but it does what i want it to do and if you want to know what that is, [here](https://mog4125.github.io/aboutforlazypeople)
 
 Oh, and before i forget, thankyou Beyonce
 
