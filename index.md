@@ -1,7 +1,3 @@
----
-layout: null
----
-
 This is my personal website, its like a hub (but not that kind of hub)
 # My Projects:
 <https://github.com/MOG4125/RIBU>
