@@ -40,25 +40,6 @@
             color: #888;
             letter-spacing: 0.05em;
         }
-        .corner-hello {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 0.85rem;
-            color: #555;
-            font-family: 'Courier New', monospace;
-            z-index: 10;
-            cursor: pointer;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-        }
-        .corner-hello:hover {
-            color: #ff8c00;
-            border-color: #333;
-            background: #111;
-        }
         .typing-hint {
             position: absolute;
             bottom: 60px;
@@ -193,100 +174,6 @@
         .info-modal .btn-close:hover {
             background: #333;
         }
-        .hello-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 300;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .hello-modal-overlay.show {
-            display: flex;
-            opacity: 1;
-        }
-        .hello-modal {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 16px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .hello-modal-overlay.show .hello-modal {
-            transform: scale(1);
-        }
-        .hello-modal h2 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: #f5f5f5;
-        }
-        .hello-modal .subtitle {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
-        .hello-list {
-            overflow-y: auto;
-            text-align: left;
-            padding-right: 10px;
-        }
-        .hello-list::-webkit-scrollbar {
-            width: 6px;
-        }
-        .hello-list::-webkit-scrollbar-track {
-            background: #0a0a0a;
-            border-radius: 3px;
-        }
-        .hello-list::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 3px;
-        }
-        .hello-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #222;
-            font-size: 0.9rem;
-        }
-        .hello-item .word {
-            color: #ff8c00;
-            font-weight: 500;
-        }
-        .hello-item .lang {
-            color: #666;
-            font-size: 0.8rem;
-        }
-        .hello-modal .btn-close {
-            margin-top: 1.2rem;
-            padding: 0.5rem 1.2rem;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background: #2a2a2a;
-            color: #f5f5f5;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            align-self: center;
-        }
-        .hello-modal .btn-close:hover {
-            background: #333;
-        }
         .ball {
             position: absolute;
             width: 60px;
@@ -389,8 +276,6 @@
 <base target="_blank">
 </head>
 <body>
-    <div class="corner-hello" id="cornerHello"></div>
-
     <div class="content">
         <h1>Hi, I'm MOG</h1>
         <p class="subtitle">I Make Stuff</p>
@@ -425,15 +310,6 @@
             <p>When <strong>useCustomPath</strong> is set to <strong>true</strong>, the ball will visit each waypoint in order. When <strong>false</strong>, it bounces randomly as usual.</p>
             <p style="margin-top:1rem;color:#888;font-size:0.85rem;">On mobile devices, you can also tilt your device to steer the ball directly.</p>
             <button class="btn-close" id="btnCloseInfo">Got it</button>
-        </div>
-    </div>
-
-    <div class="hello-modal-overlay" id="helloModalOverlay">
-        <div class="hello-modal">
-            <h2>Hello in Every Language</h2>
-            <p class="subtitle">This page greets you with a random "hello" on every visit. Here is the full collection:</p>
-            <div class="hello-list" id="helloList"></div>
-            <button class="btn-close" id="btnCloseHello">Close</button>
         </div>
     </div>
 
@@ -481,10 +357,6 @@
         const infoBtn = document.getElementById('infoBtn');
         const infoModalOverlay = document.getElementById('infoModalOverlay');
         const btnCloseInfo = document.getElementById('btnCloseInfo');
-        const cornerHello = document.getElementById('cornerHello');
-        const helloModalOverlay = document.getElementById('helloModalOverlay');
-        const btnCloseHello = document.getElementById('btnCloseHello');
-        const helloList = document.getElementById('helloList');
 
         let x = window.innerWidth / 2 - 30;
         let y = window.innerHeight / 2 - 30;
@@ -504,270 +376,49 @@
         let tiltY = 0;
         let tiltActive = false;
 
-        // Hello variants in many languages
-        const hellos = [
-            { word: 'Hello', lang: 'English' },
-            { word: 'Hola', lang: 'Spanish' },
-            { word: 'Bonjour', lang: 'French' },
-            { word: 'Ciao', lang: 'Italian' },
-            { word: 'Hallo', lang: 'German' },
-            { word: 'Hej', lang: 'Swedish' },
-            { word: 'Konnichiwa', lang: 'Japanese' },
-            { word: 'Namaste', lang: 'Hindi' },
-            { word: 'Salaam', lang: 'Arabic' },
-            { word: 'Shalom', lang: 'Hebrew' },
-            { word: 'Merhaba', lang: 'Turkish' },
-            { word: 'Privet', lang: 'Russian' },
-            { word: 'Ni hao', lang: 'Mandarin' },
-            { word: 'Annyeong', lang: 'Korean' },
-            { word: 'Sawasdee', lang: 'Thai' },
-            { word: 'Xin chao', lang: 'Vietnamese' },
-            { word: 'Selamat', lang: 'Indonesian' },
-            { word: 'Jambo', lang: 'Swahili' },
-            { word: 'Marhaba', lang: 'Arabic (Levantine)' },
-            { word: 'Dia dhuit', lang: 'Irish' },
-            { word: 'Szia', lang: 'Hungarian' },
-            { word: 'Ahoj', lang: 'Czech / Slovak' },
-            { word: 'Czesc', lang: 'Polish' },
-            { word: 'Bok', lang: 'Croatian' },
-            { word: 'Zdravo', lang: 'Serbian / Bosnian' },
-            { word: 'Pozdrav', lang: 'Slovenian' },
-            { word: 'Salam', lang: 'Persian' },
-            { word: 'Sveiki', lang: 'Latvian' },
-            { word: 'Labas', lang: 'Lithuanian' },
-            { word: 'Tere', lang: 'Estonian' },
-            { word: 'Hei', lang: 'Finnish' },
-            { word: 'Moi', lang: 'Finnish (informal)' },
-            { word: 'Tjena', lang: 'Swedish (slang)' },
-            { word: 'Hoi', lang: 'Dutch' },
-            { word: 'Servus', lang: 'Bavarian / Austrian' },
-            { word: 'Gruezi', lang: 'Swiss German' },
-            { word: 'Yassou', lang: 'Greek' },
-            { word: 'Gamarjoba', lang: 'Georgian' },
-            { word: 'Barev', lang: 'Armenian' },
-            { word: 'Sain baina uu', lang: 'Mongolian' },
-            { word: 'Sabaidee', lang: 'Lao' },
-            { word: 'Choum reap sor', lang: 'Khmer' },
-            { word: 'Assalamu alaikum', lang: 'Arabic (formal)' },
-            { word: 'Aloha', lang: 'Hawaiian' },
-            { word: 'Kia ora', lang: 'Maori' },
-            { word: 'Talofa', lang: 'Samoan' },
-            { word: 'Bula', lang: 'Fijian' },
-            { word: 'Ia orana', lang: 'Tahitian' },
-            { word: 'Kamusta', lang: 'Filipino' },
-            { word: 'Habari', lang: 'Swahili (formal)' },
-            { word: 'Salut', lang: 'French (informal)' },
-            { word: 'Hujambo', lang: 'Swahili (greeting)' },
-            { word: 'Mhoroi', lang: 'Shona' },
-            { word: 'Aang', lang: 'Inuktitut' },
-            { word: 'Sat sri akal', lang: 'Punjabi' },
-            { word: 'Adaab', lang: 'Urdu' },
-            { word: 'Vanakkam', lang: 'Tamil' },
-            { word: 'Nomoshkar', lang: 'Bengali' },
-            { word: 'As-salamu alaykum', lang: 'Arabic (classical)' },
-            { word: 'Shalom aleichem', lang: 'Hebrew (formal)' },
-            { word: 'Dobry den', lang: 'Czech (formal)' },
-            { word: 'Dobryj den', lang: 'Ukrainian' },
-            { word: 'Dzień dobry', lang: 'Polish (formal)' },
-            { word: 'Buna ziua', lang: 'Romanian' },
-            { word: 'Bună', lang: 'Romanian (informal)' },
-            { word: 'Guten Tag', lang: 'German (formal)' },
-            { word: 'Goedendag', lang: 'Dutch (formal)' },
-            { word: 'God dag', lang: 'Norwegian' },
-            { word: 'God morgon', lang: 'Swedish (morning)' },
-            { word: 'Dobro jutro', lang: 'Serbian / Croatian' },
-            { word: 'Dobar dan', lang: 'Serbian / Croatian (day)' },
-            { word: 'Dobro utro', lang: 'Bulgarian' },
-            { word: 'Bună dimineața', lang: 'Romanian (morning)' },
-            { word: 'Jo napot', lang: 'Hungarian (day)' },
-            { word: 'Jo reggelt', lang: 'Hungarian (morning)' },
-            { word: 'Boker tov', lang: 'Hebrew (morning)' },
-            { word: 'Sabah al-khair', lang: 'Arabic (morning)' },
-            { word: 'Sabah al-noor', lang: 'Arabic (response)' },
-            { word: 'Ohayou', lang: 'Japanese (informal)' },
-            { word: 'Magandang umaga', lang: 'Filipino (morning)' },
-            { word: 'Selamat pagi', lang: 'Indonesian (morning)' },
-            { word: 'Arunodhayam', lang: 'Telugu (morning)' },
-            { word: 'Suprabhat', lang: 'Sanskrit / Hindi (morning)' },
-            { word: 'Shubha prabhat', lang: 'Marathi (morning)' },
-            { word: 'Bari arah', lang: 'Punjabi (morning)' },
-            { word: 'Shubhodaya', lang: 'Kannada (morning)' },
-            { word: 'Rojbas', lang: 'Kurdish' },
-            { word: 'Boker or', lang: 'Hebrew (good morning)' },
-            { word: 'Dobré ráno', lang: 'Slovak (morning)' },
-            { word: 'Hyvää huomenta', lang: 'Finnish (morning)' },
-            { word: 'God morgen', lang: 'Danish (morning)' },
-            { word: 'Góðan daginn', lang: 'Icelandic' },
-            { word: 'Dia duit', lang: 'Irish (to one person)' },
-            { word: 'Dia is muire duit', lang: 'Irish (response)' },
-            { word: 'Haigh', lang: 'Irish (informal)' },
-            { word: 'Howdy', lang: 'American English (regional)' },
-            { word: 'Gday', lang: 'Australian English' },
-            { word: 'Wassup', lang: 'English (slang)' },
-            { word: 'Yo', lang: 'English (slang)' },
-            { word: 'Hey', lang: 'English (informal)' },
-            { word: 'Hi there', lang: 'English (friendly)' },
-            { word: 'Greetings', lang: 'English (formal)' },
-            { word: 'Salutations', lang: 'English (very formal)' },
-            { word: 'Welcome', lang: 'English' },
-            { word: 'Hola amigo', lang: 'Spanish (friendly)' },
-            { word: 'Que tal', lang: 'Spanish (how are you)' },
-            { word: 'Buenos dias', lang: 'Spanish (morning)' },
-            { word: 'Buenas tardes', lang: 'Spanish (afternoon)' },
-            { word: 'Buenas noches', lang: 'Spanish (evening)' },
-            { word: 'Como estas', lang: 'Spanish (how are you)' },
-            { word: 'Comment allez-vous', lang: 'French (formal)' },
-            { word: 'Ca va', lang: 'French (informal)' },
-            { word: 'Comment ca va', lang: 'French (how goes it)' },
-            { word: 'Bonsoir', lang: 'French (evening)' },
-            { word: 'Guten Abend', lang: 'German (evening)' },
-            { word: 'Gute Nacht', lang: 'German (night)' },
-            { word: 'Auf Wiedersehen', lang: 'German (goodbye)' },
-            { word: 'Tschüss', lang: 'German (informal goodbye)' },
-            { word: 'Arrivederci', lang: 'Italian (goodbye)' },
-            { word: 'Ciao bella', lang: 'Italian (friendly)' },
-            { word: 'Buona notte', lang: 'Italian (night)' },
-            { word: 'Sayonara', lang: 'Japanese (goodbye)' },
-            { word: 'Annyeonghaseyo', lang: 'Korean (formal)' },
-            { word: 'Annyeonghi gaseyo', lang: 'Korean (goodbye)' },
-            { word: 'Kamsahamnida', lang: 'Korean (thank you)' },
-            { word: 'Khob khun', lang: 'Thai (thank you)' },
-            { word: 'Terima kasih', lang: 'Indonesian (thank you)' },
-            { word: 'Terima kasih banyak', lang: 'Indonesian (thanks a lot)' },
-            { word: 'Dhanyavaad', lang: 'Hindi (thank you)' },
-            { word: 'Shukriya', lang: 'Urdu (thank you)' },
-            { word: 'Shukran', lang: 'Arabic (thank you)' },
-            { word: 'Toda', lang: 'Hebrew (thank you)' },
-            { word: 'Toda raba', lang: 'Hebrew (thanks a lot)' },
-            { word: 'Merci', lang: 'French (thank you)' },
-            { word: 'Merci beaucoup', lang: 'French (thanks a lot)' },
-            { word: 'Grazie', lang: 'Italian (thank you)' },
-            { word: 'Grazie mille', lang: 'Italian (thanks a lot)' },
-            { word: 'Danke', lang: 'German (thank you)' },
-            { word: 'Danke schön', lang: 'German (thanks a lot)' },
-            { word: 'Tack', lang: 'Swedish (thank you)' },
-            { word: 'Tack så mycket', lang: 'Swedish (thanks a lot)' },
-            { word: 'Kiitos', lang: 'Finnish (thank you)' },
-            { word: 'Děkuji', lang: 'Czech (thank you)' },
-            { word: 'Dziękuję', lang: 'Polish (thank you)' },
-            { word: 'Multumesc', lang: 'Romanian (thank you)' },
-            { word: 'Hvala', lang: 'Croatian (thank you)' },
-            { word: 'Faleminderit', lang: 'Albanian (thank you)' },
-            { word: 'Efharisto', lang: 'Greek (thank you)' },
-            { word: 'Spasibo', lang: 'Russian (thank you)' },
-            { word: 'Spasibo bolshoe', lang: 'Russian (thanks a lot)' },
-            { word: 'Rahmat', lang: 'Persian (thank you)' },
-            { word: 'Rahmat illahi', lang: 'Persian (thanks to God)' },
-            { word: 'Asante', lang: 'Swahili (thank you)' },
-            { word: 'Asante sana', lang: 'Swahili (thanks a lot)' },
-            { word: 'Ndiyabulela', lang: 'Xhosa (thank you)' },
-            { word: 'Ngiyabonga', lang: 'Zulu (thank you)' },
-            { word: 'Ke a leboha', lang: 'Sesotho (thank you)' },
-            { word: 'Obrigado', lang: 'Portuguese (male, thank you)' },
-            { word: 'Obrigada', lang: 'Portuguese (female, thank you)' },
-            { word: 'Gracias', lang: 'Spanish (thank you)' },
-            { word: 'Muchas gracias', lang: 'Spanish (thanks a lot)' },
-            { word: 'De nada', lang: 'Spanish (you are welcome)' },
-            { word: 'Prego', lang: 'Italian (you are welcome)' },
-            { word: 'Bitte', lang: 'German (please / you are welcome)' },
-            { word: 'Je vous en prie', lang: 'French (you are welcome)' },
-            { word: 'Alvida', lang: 'Hindi (goodbye)' },
-            { word: 'Namaste ji', lang: 'Hindi (respectful)' },
-            { word: 'Sat sri akaal ji', lang: 'Punjabi (respectful)' },
-            { word: 'Assalamu alaikum wa rahmatullah', lang: 'Arabic (peace and mercy)' },
-            { word: 'Wa alaikum assalam', lang: 'Arabic (response)' },
-            { word: 'Masha Allah', lang: 'Arabic (God has willed)' },
-            { word: 'Inshallah', lang: 'Arabic (God willing)' },
-            { word: 'Alhamdulillah', lang: 'Arabic (praise God)' },
-            { word: 'Bismillah', lang: 'Arabic (in God's name)' },
-            { word: 'Allahu akbar', lang: 'Arabic (God is great)' },
-            { word: 'Subhanallah', lang: 'Arabic (glory to God)' },
-            { word: 'Astaghfirullah', lang: 'Arabic (I seek forgiveness)' },
-            { word: 'Jazakallah', lang: 'Arabic (may God reward you)' },
-            { word: 'Barakallah', lang: 'Arabic (may God bless)' },
-            { word: 'Mabrook', lang: 'Arabic (congratulations)' },
-            { word: 'Mabrouk', lang: 'Arabic (congratulations, variant)' },
-            { word: 'Tahniah', lang: 'Malay (congratulations)' },
-            { word: 'Mubarak', lang: 'Arabic / Urdu (blessed)' },
-            { word: 'Mazel tov', lang: 'Hebrew / Yiddish (congratulations)' },
-            { word: 'Lchaim', lang: 'Hebrew / Yiddish (to life)' },
-            { word: 'Mazel', lang: 'Yiddish (luck)' },
-            { word: 'Beshert', lang: 'Yiddish (destined)' },
-            { word: 'Nu', lang: 'Yiddish (so / well)' },
-            { word: 'Oy vey', lang: 'Yiddish (oh woe)' },
-            { word: 'Feh', lang: 'Yiddish (expression of disgust)' },
-            { word: 'Gevalt', lang: 'Yiddish (cry of alarm)' },
-            { word: 'Kvetch', lang: 'Yiddish (complain)' },
-            { word: 'Schlep', lang: 'Yiddish (drag / carry)' },
-            { word: 'Schmooze', lang: 'Yiddish (chat)' },
-            { word: 'Tchotchke', lang: 'Yiddish (trinket)' },
-            { word: 'Chutzpah', lang: 'Yiddish (audacity)' },
-            { word: 'Kibbitz', lang: 'Yiddish (offer unwanted advice)' },
-            { word: 'Kvell', lang: 'Yiddish (beam with pride)' },
-            { word: 'Plotz', lang: 'Yiddish (faint / burst)' },
-            { word: 'Yalla', lang: 'Arabic / Hebrew (let's go)' },
-            { word: 'Habibi', lang: 'Arabic (my love, male)' },
-            { word: 'Habibti', lang: 'Arabic (my love, female)' },
-            { word: 'Yaani', lang: 'Arabic (you know / like)' },
-            { word: 'Khalas', lang: 'Arabic (enough / done)' },
-            { word: 'Maalesh', lang: 'Arabic (never mind)' },
-            { word: 'Shou', lang: 'Arabic (what)' },
-            { word: 'Shou baddak', lang: 'Arabic (what do you want)' },
-            { word: 'Shou fi', lang: 'Arabic (what is there)' },
-            { word: 'Shou biddak', lang: 'Arabic (what do you want, Levantine)' },
-            { word: 'Shou biddik', lang: 'Arabic (what do you want, female)' },
-            { word: 'Shou biddkon', lang: 'Arabic (what do you want, plural)' },
-            { word: 'Shou biddken', lang: 'Arabic (what do you want, fem plural)' },
-            { word: 'Shou biddhom', lang: 'Arabic (what do they want)' },
-            { word: 'Shou biddha', lang: 'Arabic (what does she want)' },
-            { word: 'Shou biddo', lang: 'Arabic (what does he want)' },
-            { word: 'Shou bidde', lang: 'Arabic (what do I want)' },
-            { word: 'Shou biddi', lang: 'Arabic (what do I want, variant)' },
-            { word: 'Shou biddna', lang: 'Arabic (what do we want)' },
-            { word: 'Shou biddkum', lang: 'Arabic (what do you want, formal plural)' },
-            { word: 'Shou biddkun', lang: 'Arabic (what do you want, variant)' },
-            { word: 'Shou biddhum', lang: 'Arabic (what do they want, variant)' },
-            { word: 'Wyaaaaaaah', lang: 'Wookiee' },
-            { word: 'Rrrrugh', lang: 'Wookiee (growl)' },
-            { word: 'Aarrrrgh', lang: 'Wookiee (roar)' },
-            { word: 'Grrrwaaah', lang: 'Wookiee (greeting)' },
-            { word: 'Wrrroooor', lang: 'Wookiee (friend)' },
-            { word: 'Hrrrnnng', lang: 'Wookiee (approval)' },
-            { word: 'Mrrrgh', lang: 'Wookiee (hello)' },
-            { word: 'Rrraaargh', lang: 'Wookiee (excitement)' }
-        ];
+        // Info button movement
+        let infoX = 20;
+        let infoY = 20;
+        let infoVx = (Math.random() - 0.5) * 3;
+        let infoVy = (Math.random() - 0.5) * 3;
+        let infoWobble = 0;
+        let infoMode = 'bounce'; // 'bounce', 'orbit', 'teleport', 'zigzag', 'spiral'
+        let infoModeTimer = 0;
+        let infoOrbitAngle = 0;
+        let infoOrbitRadius = 100;
+        let infoOrbitCenterX = 0;
+        let infoOrbitCenterY = 0;
+        let infoZigzagPhase = 0;
+        let infoSpiralAngle = 0;
+        let infoSpiralRadius = 0;
 
-        // Pick random hello on page load
-        const randomHello = hellos[Math.floor(Math.random() * hellos.length)];
-        document.title = randomHello.word + ' — MOG';
-        cornerHello.textContent = randomHello.word;
+        // Typing animation
+        const hintText = 'click on the ball';
+        let hintIndex = 0;
+        let hintTyping = true;
 
-        // Populate hello list modal
-        function populateHelloList() {
-            helloList.innerHTML = '';
-            hellos.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'hello-item';
-                div.innerHTML = '<span class="word">' + item.word + '</span><span class="lang">' + item.lang + '</span>';
-                helloList.appendChild(div);
-            });
-        }
-
-        // Corner hello click
-        cornerHello.addEventListener('click', () => {
-            populateHelloList();
-            helloModalOverlay.classList.add('show');
-        });
-
-        btnCloseHello.addEventListener('click', () => {
-            helloModalOverlay.classList.remove('show');
-        });
-
-        helloModalOverlay.addEventListener('click', (e) => {
-            if (e.target === helloModalOverlay) {
-                helloModalOverlay.classList.remove('show');
+        function typeHint() {
+            if (hintTyping) {
+                if (hintIndex < hintText.length) {
+                    typingHint.innerHTML = hintText.substring(0, hintIndex + 1) + '<span class="cursor"></span>';
+                    hintIndex++;
+                    setTimeout(typeHint, 100 + Math.random() * 80);
+                } else {
+                    hintTyping = false;
+                    setTimeout(typeHint, 2000);
+                }
+            } else {
+                if (hintIndex > 0) {
+                    typingHint.innerHTML = hintText.substring(0, hintIndex - 1) + '<span class="cursor"></span>';
+                    hintIndex--;
+                    setTimeout(typeHint, 60);
+                } else {
+                    hintTyping = true;
+                    setTimeout(typeHint, 500);
+                }
             }
-        });
+        }
+        typeHint();
 
         // Info button
         infoBtn.addEventListener('click', () => {
@@ -788,8 +439,8 @@
         function handleOrientation(event) {
             const gamma = event.gamma || 0;
             const beta = event.beta || 0;
-            tiltX = Math.max(-3, Math.min(3, gamma / 25));
-            tiltY = Math.max(-3, Math.min(3, -beta / 25));
+            tiltX = Math.max(-2, Math.min(2, gamma / 30));
+            tiltY = Math.max(-2, Math.min(2, beta / 30));
             tiltActive = true;
         }
 
@@ -816,24 +467,6 @@
             requestTiltPermission();
             document.body.removeEventListener('click', requestOnFirstClick);
         }, { once: true });
-
-        // ========================================
-        // INFO BUTTON MOVEMENT
-        // ========================================
-        let infoX = 20;
-        let infoY = 20;
-        let infoVx = (Math.random() - 0.5) * 3;
-        let infoVy = (Math.random() - 0.5) * 3;
-        let infoWobble = 0;
-        let infoMode = 'bounce';
-        let infoModeTimer = 0;
-        let infoOrbitAngle = 0;
-        let infoOrbitRadius = 100;
-        let infoOrbitCenterX = 0;
-        let infoOrbitCenterY = 0;
-        let infoZigzagPhase = 0;
-        let infoSpiralAngle = 0;
-        let infoSpiralRadius = 0;
 
         function pickRandomMode() {
             const modes = ['bounce', 'orbit', 'teleport', 'zigzag', 'spiral', 'drunk'];
@@ -943,9 +576,11 @@
                     break;
             }
 
+            // Keep in bounds for all modes
             infoX = Math.max(0, Math.min(window.innerWidth - 32, infoX));
             infoY = Math.max(0, Math.min(window.innerHeight - 32, infoY));
 
+            // Random wobble/rotation
             infoWobble += 0.05;
             const wobbleX = Math.sin(infoWobble) * 3;
             const wobbleY = Math.cos(infoWobble * 1.3) * 3;
@@ -962,39 +597,6 @@
         pickRandomMode();
         animateInfoButton();
 
-        // ========================================
-        // TYPING ANIMATION
-        // ========================================
-        const hintText = 'click on the ball';
-        let hintIndex = 0;
-        let hintTyping = true;
-
-        function typeHint() {
-            if (hintTyping) {
-                if (hintIndex < hintText.length) {
-                    typingHint.innerHTML = hintText.substring(0, hintIndex + 1) + '<span class="cursor"></span>';
-                    hintIndex++;
-                    setTimeout(typeHint, 100 + Math.random() * 80);
-                } else {
-                    hintTyping = false;
-                    setTimeout(typeHint, 2000);
-                }
-            } else {
-                if (hintIndex > 0) {
-                    typingHint.innerHTML = hintText.substring(0, hintIndex - 1) + '<span class="cursor"></span>';
-                    hintIndex--;
-                    setTimeout(typeHint, 60);
-                } else {
-                    hintTyping = true;
-                    setTimeout(typeHint, 500);
-                }
-            }
-        }
-        typeHint();
-
-        // ========================================
-        // BALL ANIMATION
-        // ========================================
         function animate() {
             if (!isPaused) {
                 if (useCustomPath && ballPath.length > 0) {
@@ -1107,7 +709,6 @@
             if (y > window.innerHeight - radius * 2) y = window.innerHeight - radius * 2;
         });
 
-        // Start ball animation
         animate();
     </script>
 </body>
